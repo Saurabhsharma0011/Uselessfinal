@@ -1,5 +1,8 @@
 "use client"
 
+import { useToast } from "@/hooks/use-toast"
+import Image from "next/image"
+
 import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 
 import { useState, useEffect } from "react"
@@ -21,7 +24,6 @@ import { PhantomWalletButton } from "@/components/phantom-wallet-button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { VerifiedBadge } from "@/components/verified-badge"
 import { updateProfile, getVideos, type User, type Video } from "@/lib/auth"
-import { useToast } from "@/hooks/use-toast"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 
 export default function UselessTube() {
@@ -199,9 +201,7 @@ export default function UselessTube() {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2" style={{ transform: "rotate(0.3deg)" }}>
-            <div className="bg-red-600 p-2 rounded-full border-3 border-black dark:border-gray-300 transform -rotate-3">
-              <Play className="w-6 h-6 text-white fill-current" />
-            </div>
+            <Image src="/logo.png" alt="UselessTube Logo" width={50} height={50} />
             <div>
               <h1
                 className="text-2xl font-bold text-gray-900 dark:text-gray-100"
@@ -731,6 +731,11 @@ export default function UselessTube() {
           </div>
         </main>
       </div>
+      <footer className="bg-white dark:bg-gray-800 border-t-4 border-gray-800 dark:border-gray-600 shadow-lg mt-8">
+        <div className="max-w-7xl mx-auto py-6 px-4 text-center text-gray-600 dark:text-gray-400">
+          <p style={{ fontFamily: "Comic Sans MS, cursive" }}>© 2025 UselessTube. All rights reserved. Or not. Whatever.</p>
+        </div>
+      </footer>
     </div>
   )
 }
