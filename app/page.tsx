@@ -8,7 +8,7 @@ import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Search, UserIcon, Play, ChevronDown, Upload, Check, Trash2, Copy } from "lucide-react"
+import { Search, UserIcon, Play, ChevronDown, Upload, Check, Trash2, Copy, Menu, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -35,6 +35,7 @@ export default function UselessTube() {
   const [searchQuery, setSearchQuery] = useState("")
   const [searchResults, setSearchResults] = useState<Video[]>([])
   const [isSearching, setIsSearching] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
 
@@ -195,239 +196,581 @@ export default function UselessTube() {
   const displayVideos = searchResults.length > 0 ? searchResults : videos
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-      {/* Header */}
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <header className="bg-white dark:bg-gray-800 border-b-4 border-gray-800 dark:border-gray-600 shadow-lg transition-colors duration-300">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2" style={{ transform: "rotate(0.3deg)" }}>
-            <Image src="/logo.png" alt="UselessTube Logo" width={50} height={50} />
-            <div>
-              <h1
-                className="text-2xl font-bold text-gray-900 dark:text-gray-100"
-                style={{
-                  fontFamily: "Comic Sans MS, cursive",
-                  textShadow: "2px 2px 0px #ef4444",
-                }}
-              >
-                UselessTube
-              </h1>
-              <p
-                className="text-xs text-gray-600 dark:text-gray-400 -mt-1"
-                style={{ fontFamily: "Comic Sans MS, cursive" }}
-              >
-                place where things become useless
-              </p>
-            </div>
-          </Link>
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          {/* Mobile Header */}
+          <div className="flex items-center justify-between lg:hidden">
+            {/* Mobile Menu Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </Button>
 
-          {/* Search Bar */}
-          <form onSubmit={handleSearch} className="flex-1 max-w-2xl mx-8" style={{ transform: "rotate(-0.1deg)" }}>
-            <div className="relative">
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search something useless..."
-                className="w-full pl-4 pr-12 py-3 text-lg border-3 border-gray-800 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 shadow-inner dark:text-gray-100"
-                style={{
-                  fontFamily: "Comic Sans MS, cursive",
-                  borderStyle: "dashed",
-                }}
-              />
-              <Button
-                type="submit"
-                size="icon"
-                disabled={isSearching}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-red-600 hover:bg-red-700 border-2 border-gray-800 dark:border-gray-600 rounded-full"
-                style={{ transform: "rotate(5deg)" }}
-              >
-                <Search className="w-4 h-4 text-white" />
-              </Button>
-            </div>
-          </form>
+            {/* Logo */}
+            <Link href="/" className="flex items-center space-x-2" style={{ transform: "rotate(0.3deg)" }}>
+              <Image src="/logo.png" alt="UselessTube Logo" width={40} height={40} />
+              <div>
+                <h1
+                  className="text-xl font-bold text-gray-900 dark:text-gray-100"
+                  style={{
+                    fontFamily: "Comic Sans MS, cursive",
+                    textShadow: "2px 2px 0px #ef4444",
+                  }}
+                >
+                  UselessTube
+                </h1>
+                <p
+                  className="text-xs text-gray-600 dark:text-gray-400 -mt-1"
+                  style={{ fontFamily: "Comic Sans MS, cursive" }}
+                >
+                  place where things become useless
+                </p>
+              </div>
+            </Link>
 
-          {/* Right side controls */}
-          <div className="flex items-center space-x-4">
-            {/* Theme Toggle */}
-            <ThemeToggle />
-
-            {/* User Profile Dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <div className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full border-3 border-black dark:border-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors cursor-pointer flex items-center space-x-2">
-                  {user && user.name ? (
-                    <Avatar className="w-8 h-8 border-2 border-black dark:border-gray-300">
-                      <AvatarImage src={user.avatar_url || "/placeholder.svg"} alt={user.name} />
-                      <AvatarFallback className="bg-red-600 text-white font-bold">
-                        {user.name.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  ) : (
-                    <UserIcon className="w-6 h-6 text-gray-800 dark:text-gray-200" />
-                  )}
-                  <ChevronDown className="w-4 h-4 text-gray-800 dark:text-gray-200" />
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-80 bg-white dark:bg-gray-800 border-3 border-gray-800 dark:border-gray-600 shadow-lg"
-                style={{ borderStyle: "dashed", fontFamily: "Comic Sans MS, cursive" }}
-              >
-                {!user ? (
-                  <div className="p-4">
-                    <PhantomWalletButton
-                      onWalletConnected={handleWalletConnected}
-                      onWalletDisconnected={handleWalletDisconnected}
-                      loading={loading}
-                      setLoading={setLoading}
-                    />
-                  </div>
-                ) : (
-                  <>
-                    {showProfileSetup ? (
-                      <div className="p-4 space-y-4">
-                        <h3
-                          className="font-bold text-gray-900 dark:text-gray-100 text-center border-b-2 border-gray-300 dark:border-gray-600 pb-2"
-                          style={{ borderStyle: "dashed" }}
-                        >
-                          Setup Your Useless Profile
-                        </h3>
-
-                        <div className="space-y-2">
-                          <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            Profile Picture
-                          </Label>
-                          <div className="flex items-center space-x-3">
-                            <Avatar className="w-16 h-16 border-3 border-gray-800 dark:border-gray-300 transform rotate-3">
-                              <AvatarImage src={tempProfile.image || "/placeholder.svg"} alt="Profile" />
-                              <AvatarFallback className="bg-red-600 text-white font-bold text-xl">
-                                {tempProfile.name.charAt(0).toUpperCase() || "U"}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageUpload}
-                                className="hidden"
-                                id="profile-upload"
-                              />
-                              <Label
-                                htmlFor="profile-upload"
-                                className="inline-flex items-center px-3 py-2 bg-gray-200 dark:bg-gray-700 border-2 border-gray-600 dark:border-gray-500 rounded-lg cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-                                style={{ borderStyle: "dashed" }}
-                              >
-                                <Upload className="w-4 h-4 mr-2" />
-                                Upload
-                              </Label>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                            Your Useless Name
-                          </Label>
-                          <Input
-                            value={tempProfile.name}
-                            onChange={(e) => setTempProfile((prev) => ({ ...prev, name: e.target.value }))}
-                            placeholder="Enter your useless name..."
-                            className="border-2 border-gray-600 dark:border-gray-500 rounded-lg bg-white dark:bg-gray-700"
-                            style={{ borderStyle: "dashed", fontFamily: "Comic Sans MS, cursive" }}
-                          />
-                        </div>
-
-                        <Button
-                          onClick={handleSaveProfile}
-                          disabled={!tempProfile.name.trim() || loading}
-                          className="w-full bg-red-600 hover:bg-red-700 text-white border-2 border-black dark:border-gray-300 transition-colors"
-                          style={{ borderStyle: "solid", fontFamily: "Comic Sans MS, cursive" }}
-                        >
-                          <Check className="w-4 h-4 mr-2" />
-                          {loading ? "Saving..." : "Save Useless Profile"}
-                        </Button>
-                      </div>
+            {/* Mobile Right Controls */}
+            <div className="flex items-center space-x-2">
+              <ThemeToggle />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full border-3 border-black dark:border-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors cursor-pointer flex items-center space-x-2">
+                    {user && user.name ? (
+                      <Avatar className="w-6 h-6 border-2 border-black dark:border-gray-300">
+                        <AvatarImage src={user.avatar_url || "/placeholder.svg"} alt={user.name} />
+                        <AvatarFallback className="bg-red-600 text-white font-bold text-xs">
+                          {user.name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
                     ) : (
-                      <>
-                        <div
-                          className="p-4 border-b-2 border-gray-300 dark:border-gray-600"
-                          style={{ borderStyle: "dashed" }}
-                        >
-                          <div className="flex items-center space-x-3">
-                            <Avatar className="w-12 h-12 border-2 border-black dark:border-gray-300 transform -rotate-2">
-                              <AvatarImage src={user.avatar_url || "/placeholder.svg"} alt={user.name || ""} />
-                              <AvatarFallback className="bg-red-600 text-white font-bold">
-                                {(user.name || "U").charAt(0).toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <div className="flex items-center space-x-2">
-                                <p className="font-bold text-gray-900 dark:text-gray-100">
-                                  {user.name || "Unnamed User"}
-                                </p>
-                                <VerifiedBadge
-                                  isVerified={
-                                    user.name === "UselessTube Official" ||
-                                    user.wallet_address === "DBoZreu2...AEYTBKEA"
-                                  }
+                      <UserIcon className="w-5 h-5 text-gray-800 dark:text-gray-200" />
+                    )}
+                    <ChevronDown className="w-3 h-3 text-gray-800 dark:text-gray-200" />
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-72 bg-white dark:bg-gray-800 border-3 border-gray-800 dark:border-gray-600 shadow-lg"
+                  style={{ borderStyle: "dashed", fontFamily: "Comic Sans MS, cursive" }}
+                >
+                  {!user ? (
+                    <div className="p-4">
+                      <PhantomWalletButton
+                        onWalletConnected={handleWalletConnected}
+                        onWalletDisconnected={handleWalletDisconnected}
+                        loading={loading}
+                        setLoading={setLoading}
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      {showProfileSetup ? (
+                        <div className="p-4 space-y-4">
+                          <h3
+                            className="font-bold text-gray-900 dark:text-gray-100 text-center border-b-2 border-gray-300 dark:border-gray-600 pb-2"
+                            style={{ borderStyle: "dashed" }}
+                          >
+                            Setup Your Useless Profile
+                          </h3>
+
+                          <div className="space-y-2">
+                            <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                              Profile Picture
+                            </Label>
+                            <div className="flex items-center space-x-3">
+                              <Avatar className="w-12 h-12 border-3 border-gray-800 dark:border-gray-300 transform rotate-3">
+                                <AvatarImage src={tempProfile.image || "/placeholder.svg"} alt="Profile" />
+                                <AvatarFallback className="bg-red-600 text-white font-bold">
+                                  {tempProfile.name.charAt(0).toUpperCase() || "U"}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={handleImageUpload}
+                                  className="hidden"
+                                  id="profile-upload-mobile"
                                 />
+                                <Label
+                                  htmlFor="profile-upload-mobile"
+                                  className="inline-flex items-center px-2 py-1 bg-gray-200 dark:bg-gray-700 border-2 border-gray-600 dark:border-gray-500 rounded-lg cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-sm"
+                                  style={{ borderStyle: "dashed" }}
+                                >
+                                  <Upload className="w-3 h-3 mr-1" />
+                                  Upload
+                                </Label>
                               </div>
-                              <p className="text-xs text-gray-600 dark:text-gray-400 font-mono">
-                                {user.wallet_address?.slice(0, 8)}...{user.wallet_address?.slice(-8)}
-                              </p>
                             </div>
                           </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                              Your Useless Name
+                            </Label>
+                            <Input
+                              value={tempProfile.name}
+                              onChange={(e) => setTempProfile((prev) => ({ ...prev, name: e.target.value }))}
+                              placeholder="Enter your useless name..."
+                              className="border-2 border-gray-600 dark:border-gray-500 rounded-lg bg-white dark:bg-gray-700 text-sm"
+                              style={{ borderStyle: "dashed", fontFamily: "Comic Sans MS, cursive" }}
+                            />
+                          </div>
+
+                          <Button
+                            onClick={handleSaveProfile}
+                            disabled={!tempProfile.name.trim() || loading}
+                            className="w-full bg-red-600 hover:bg-red-700 text-white border-2 border-black dark:border-gray-300 transition-colors text-sm"
+                            style={{ borderStyle: "solid", fontFamily: "Comic Sans MS, cursive" }}
+                          >
+                            <Check className="w-3 h-3 mr-2" />
+                            {loading ? "Saving..." : "Save Useless Profile"}
+                          </Button>
                         </div>
+                      ) : (
+                        <>
+                          <div
+                            className="p-4 border-b-2 border-gray-300 dark:border-gray-600"
+                            style={{ borderStyle: "dashed" }}
+                          >
+                            <div className="flex items-center space-x-3">
+                              <Avatar className="w-10 h-10 border-2 border-black dark:border-gray-300 transform -rotate-2">
+                                <AvatarImage src={user.avatar_url || "/placeholder.svg"} alt={user.name || ""} />
+                                <AvatarFallback className="bg-red-600 text-white font-bold">
+                                  {(user.name || "U").charAt(0).toUpperCase()}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <div className="flex items-center space-x-2">
+                                  <p className="font-bold text-gray-900 dark:text-gray-100 text-sm">
+                                    {user.name || "Unnamed User"}
+                                  </p>
+                                  <VerifiedBadge
+                                    isVerified={
+                                      user.name === "UselessTube Official" ||
+                                      user.wallet_address === "DBoZreu2...AEYTBKEA"
+                                    }
+                                  />
+                                </div>
+                                <p className="text-xs text-gray-600 dark:text-gray-400 font-mono">
+                                  {user.wallet_address?.slice(0, 8)}...{user.wallet_address?.slice(-8)}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
 
-                        <DropdownMenuItem
-                          onClick={() => {
-                            setShowProfileSetup(true)
-                            setTempProfile({ name: user.name || "", image: user.avatar_url || "" })
-                          }}
-                          className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
-                        >
-                          <UserIcon className="w-4 h-4 mr-3 text-gray-600 dark:text-gray-400" />
-                          <span className="text-gray-800 dark:text-gray-200">Edit Profile</span>
-                        </DropdownMenuItem>
-
-                        <Link href="/dashboard">
-                          <DropdownMenuItem className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
-                            <span className="text-gray-800 dark:text-gray-200">My Useless Videos</span>
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setShowProfileSetup(true)
+                              setTempProfile({ name: user.name || "", image: user.avatar_url || "" })
+                            }}
+                            className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                          >
+                            <UserIcon className="w-4 h-4 mr-3 text-gray-600 dark:text-gray-400" />
+                            <span className="text-gray-800 dark:text-gray-200 text-sm">Edit Profile</span>
                           </DropdownMenuItem>
-                        </Link>
 
-                        <Link href="/upload">
-                          <DropdownMenuItem className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
-                            <Upload className="w-4 h-4 mr-3 text-gray-600 dark:text-gray-400" />
-                            <span className="text-gray-800 dark:text-gray-200">Upload Video</span>
-                          </DropdownMenuItem>
-                        </Link>
+                          <Link href="/dashboard">
+                            <DropdownMenuItem className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+                              <span className="text-gray-800 dark:text-gray-200 text-sm">My Useless Videos</span>
+                            </DropdownMenuItem>
+                          </Link>
 
-                        <DropdownMenuSeparator
-                          className="border-gray-300 dark:border-gray-600"
-                          style={{ borderStyle: "dashed" }}
-                        />
+                          <Link href="/upload">
+                            <DropdownMenuItem className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+                              <Upload className="w-4 h-4 mr-3 text-gray-600 dark:text-gray-400" />
+                              <span className="text-gray-800 dark:text-gray-200 text-sm">Upload Video</span>
+                            </DropdownMenuItem>
+                          </Link>
 
-                        <div className="p-4">
-                          <PhantomWalletButton
-                            onWalletConnected={handleWalletConnected}
-                            onWalletDisconnected={handleWalletDisconnected}
-                            loading={loading}
-                            setLoading={setLoading}
+                          <DropdownMenuSeparator
+                            className="border-gray-300 dark:border-gray-600"
+                            style={{ borderStyle: "dashed" }}
                           />
-                        </div>
-                      </>
+
+                          <div className="p-4">
+                            <PhantomWalletButton
+                              onWalletConnected={handleWalletConnected}
+                              onWalletDisconnected={handleWalletDisconnected}
+                              loading={loading}
+                              setLoading={setLoading}
+                            />
+                          </div>
+                        </>
+                      )}
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+
+          {/* Desktop Header */}
+          <div className="hidden lg:flex items-center justify-between">
+            {/* Logo */}
+            <Link href="/" className="flex items-center space-x-2" style={{ transform: "rotate(0.3deg)" }}>
+              <Image src="/logo.png" alt="UselessTube Logo" width={50} height={50} />
+              <div>
+                <h1
+                  className="text-2xl font-bold text-gray-900 dark:text-gray-100"
+                  style={{
+                    fontFamily: "Comic Sans MS, cursive",
+                    textShadow: "2px 2px 0px #ef4444",
+                  }}
+                >
+                  UselessTube
+                </h1>
+                <p
+                  className="text-xs text-gray-600 dark:text-gray-400 -mt-1"
+                  style={{ fontFamily: "Comic Sans MS, cursive" }}
+                >
+                  place where things become useless
+                </p>
+              </div>
+            </Link>
+
+            {/* Search Bar */}
+            <form onSubmit={handleSearch} className="flex-1 max-w-2xl mx-8" style={{ transform: "rotate(-0.1deg)" }}>
+              <div className="relative">
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search something useless..."
+                  className="w-full pl-4 pr-12 py-3 text-lg border-3 border-gray-800 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 shadow-inner dark:text-gray-100"
+                  style={{
+                    fontFamily: "Comic Sans MS, cursive",
+                    borderStyle: "dashed",
+                  }}
+                />
+                <Button
+                  type="submit"
+                  size="icon"
+                  disabled={isSearching}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-red-600 hover:bg-red-700 border-2 border-gray-800 dark:border-gray-600 rounded-full"
+                  style={{ transform: "rotate(5deg)" }}
+                >
+                  <Search className="w-4 h-4 text-white" />
+                </Button>
+              </div>
+            </form>
+
+            {/* Right side controls */}
+            <div className="flex items-center space-x-4">
+              {/* Theme Toggle */}
+              <ThemeToggle />
+
+              {/* User Profile Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className="bg-gray-200 dark:bg-gray-700 p-2 rounded-full border-3 border-black dark:border-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors cursor-pointer flex items-center space-x-2">
+                    {user && user.name ? (
+                      <Avatar className="w-8 h-8 border-2 border-black dark:border-gray-300">
+                        <AvatarImage src={user.avatar_url || "/placeholder.svg"} alt={user.name} />
+                        <AvatarFallback className="bg-red-600 text-white font-bold">
+                          {user.name.charAt(0).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    ) : (
+                      <UserIcon className="w-6 h-6 text-gray-800 dark:text-gray-200" />
                     )}
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+                    <ChevronDown className="w-4 h-4 text-gray-800 dark:text-gray-200" />
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-80 bg-white dark:bg-gray-800 border-3 border-gray-800 dark:border-gray-600 shadow-lg"
+                  style={{ borderStyle: "dashed", fontFamily: "Comic Sans MS, cursive" }}
+                >
+                  {!user ? (
+                    <div className="p-4">
+                      <PhantomWalletButton
+                        onWalletConnected={handleWalletConnected}
+                        onWalletDisconnected={handleWalletDisconnected}
+                        loading={loading}
+                        setLoading={setLoading}
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      {showProfileSetup ? (
+                        <div className="p-4 space-y-4">
+                          <h3
+                            className="font-bold text-gray-900 dark:text-gray-100 text-center border-b-2 border-gray-300 dark:border-gray-600 pb-2"
+                            style={{ borderStyle: "dashed" }}
+                          >
+                            Setup Your Useless Profile
+                          </h3>
+
+                          <div className="space-y-2">
+                            <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                              Profile Picture
+                            </Label>
+                            <div className="flex items-center space-x-3">
+                              <Avatar className="w-16 h-16 border-3 border-gray-800 dark:border-gray-300 transform rotate-3">
+                                <AvatarImage src={tempProfile.image || "/placeholder.svg"} alt="Profile" />
+                                <AvatarFallback className="bg-red-600 text-white font-bold text-xl">
+                                  {tempProfile.name.charAt(0).toUpperCase() || "U"}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={handleImageUpload}
+                                  className="hidden"
+                                  id="profile-upload"
+                                />
+                                <Label
+                                  htmlFor="profile-upload"
+                                  className="inline-flex items-center px-3 py-2 bg-gray-200 dark:bg-gray-700 border-2 border-gray-600 dark:border-gray-500 rounded-lg cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                                  style={{ borderStyle: "dashed" }}
+                                >
+                                  <Upload className="w-4 h-4 mr-2" />
+                                  Upload
+                                </Label>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                              Your Useless Name
+                            </Label>
+                            <Input
+                              value={tempProfile.name}
+                              onChange={(e) => setTempProfile((prev) => ({ ...prev, name: e.target.value }))}
+                              placeholder="Enter your useless name..."
+                              className="border-2 border-gray-600 dark:border-gray-500 rounded-lg bg-white dark:bg-gray-700"
+                              style={{ borderStyle: "dashed", fontFamily: "Comic Sans MS, cursive" }}
+                            />
+                          </div>
+
+                          <Button
+                            onClick={handleSaveProfile}
+                            disabled={!tempProfile.name.trim() || loading}
+                            className="w-full bg-red-600 hover:bg-red-700 text-white border-2 border-black dark:border-gray-300 transition-colors"
+                            style={{ borderStyle: "solid", fontFamily: "Comic Sans MS, cursive" }}
+                          >
+                            <Check className="w-4 h-4 mr-2" />
+                            {loading ? "Saving..." : "Save Useless Profile"}
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          <div
+                            className="p-4 border-b-2 border-gray-300 dark:border-gray-600"
+                            style={{ borderStyle: "dashed" }}
+                          >
+                            <div className="flex items-center space-x-3">
+                              <Avatar className="w-12 h-12 border-2 border-black dark:border-gray-300 transform -rotate-2">
+                                <AvatarImage src={user.avatar_url || "/placeholder.svg"} alt={user.name || ""} />
+                                <AvatarFallback className="bg-red-600 text-white font-bold">
+                                  {(user.name || "U").charAt(0).toUpperCase()}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <div className="flex items-center space-x-2">
+                                  <p className="font-bold text-gray-900 dark:text-gray-100">
+                                    {user.name || "Unnamed User"}
+                                  </p>
+                                  <VerifiedBadge
+                                    isVerified={
+                                      user.name === "UselessTube Official" ||
+                                      user.wallet_address === "DBoZreu2...AEYTBKEA"
+                                    }
+                                  />
+                                </div>
+                                <p className="text-xs text-gray-600 dark:text-gray-400 font-mono">
+                                  {user.wallet_address?.slice(0, 8)}...{user.wallet_address?.slice(-8)}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <DropdownMenuItem
+                            onClick={() => {
+                              setShowProfileSetup(true)
+                              setTempProfile({ name: user.name || "", image: user.avatar_url || "" })
+                            }}
+                            className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                          >
+                            <UserIcon className="w-4 h-4 mr-3 text-gray-600 dark:text-gray-400" />
+                            <span className="text-gray-800 dark:text-gray-200">Edit Profile</span>
+                          </DropdownMenuItem>
+
+                          <Link href="/dashboard">
+                            <DropdownMenuItem className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+                              <span className="text-gray-800 dark:text-gray-200">My Useless Videos</span>
+                            </DropdownMenuItem>
+                          </Link>
+
+                          <Link href="/upload">
+                            <DropdownMenuItem className="p-3 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+                              <Upload className="w-4 h-4 mr-3 text-gray-600 dark:text-gray-400" />
+                              <span className="text-gray-800 dark:text-gray-200">Upload Video</span>
+                            </DropdownMenuItem>
+                          </Link>
+
+                          <DropdownMenuSeparator
+                            className="border-gray-300 dark:border-gray-600"
+                            style={{ borderStyle: "dashed" }}
+                          />
+
+                          <div className="p-4">
+                            <PhantomWalletButton
+                              onWalletConnected={handleWalletConnected}
+                              onWalletDisconnected={handleWalletDisconnected}
+                              loading={loading}
+                              setLoading={setLoading}
+                            />
+                          </div>
+                        </>
+                      )}
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+
+          {/* Mobile Search Bar */}
+          <div className="mt-4 lg:hidden">
+            <form onSubmit={handleSearch} style={{ transform: "rotate(-0.1deg)" }}>
+              <div className="relative">
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search something useless..."
+                  className="w-full pl-4 pr-12 py-2 text-base border-3 border-gray-800 dark:border-gray-600 rounded-full bg-white dark:bg-gray-700 shadow-inner dark:text-gray-100"
+                  style={{
+                    fontFamily: "Comic Sans MS, cursive",
+                    borderStyle: "dashed",
+                  }}
+                />
+                <Button
+                  type="submit"
+                  size="icon"
+                  disabled={isSearching}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-red-600 hover:bg-red-700 border-2 border-gray-800 dark:border-gray-600 rounded-full"
+                  style={{ transform: "rotate(5deg)" }}
+                >
+                  <Search className="w-4 h-4 text-white" />
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto flex">
-        {/* Sidebar */}
-        <aside className="w-64 p-6" style={{ transform: "rotate(0.2deg)" }}>
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row">
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-white dark:bg-gray-800 border-b-4 border-gray-800 dark:border-gray-600 shadow-lg">
+            <div className="p-4">
+              <Card
+                className="bg-gray-100 dark:bg-gray-800 border-3 border-gray-800 dark:border-gray-600 shadow-lg transform -rotate-1 transition-colors duration-300"
+                style={{ borderStyle: "dashed" }}
+              >
+                <CardContent className="p-4">
+                  <nav className="space-y-3">
+                    {sidebarItems.map((item, index) => (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block p-3 bg-white dark:bg-gray-700 border-2 border-gray-600 dark:border-gray-500 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors shadow-md transform hover:scale-105"
+                        style={{
+                          fontFamily: "Comic Sans MS, cursive",
+                          transform: `rotate(${(index % 2 === 0 ? 1 : -1) * (index + 1) * 0.5}deg)`,
+                          borderStyle: "solid",
+                        }}
+                      >
+                        <span className="text-gray-800 dark:text-gray-200 font-semibold">{item.name}</span>
+                      </Link>
+                    ))}
+                  </nav>
+                </CardContent>
+              </Card>
+
+              {/* Social Section */}
+              <Card
+                className="mt-4 bg-gray-100 dark:bg-gray-800 border-3 border-gray-800 dark:border-gray-600 shadow-lg transform rotate-1 transition-colors duration-300"
+                style={{ borderStyle: "dashed" }}
+              >
+                <CardContent className="p-4">
+                  <h3
+                    className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 text-center"
+                    style={{ fontFamily: "Comic Sans MS, cursive" }}
+                  >
+                    Socials
+                  </h3>
+                  <nav className="space-y-3">
+                                    <a
+                  href="https://x.com/theuselesstube"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block p-3 text-center bg-white dark:bg-gray-700 border-2 border-gray-600 dark:border-gray-500 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors shadow-md transform hover:scale-105"
+                  style={{
+                    fontFamily: "Comic Sans MS, cursive",
+                    borderStyle: "solid",
+                  }}
+                >
+                  <span className="text-gray-800 dark:text-gray-200 font-semibold">Twitter</span>
+                </a>
+                    <a
+                      href="https://t.me/uselessstube"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-3 text-center bg-white dark:bg-gray-700 border-2 border-gray-600 dark:border-gray-500 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors shadow-md transform hover:scale-105"
+                      style={{
+                        fontFamily: "Comic Sans MS, cursive",
+                        borderStyle: "solid",
+                      }}
+                    >
+                      <span className="text-gray-800 dark:text-gray-200 font-semibold">Telegram</span>
+                    </a>
+                  </nav>
+                </CardContent>
+              </Card>
+
+              {/* CA Section */}
+              <Card
+                className="mt-4 bg-gray-100 dark:bg-gray-800 border-3 border-gray-800 dark:border-gray-600 shadow-lg transform -rotate-1 transition-colors duration-300"
+                style={{ borderStyle: "dashed" }}
+              >
+                <CardContent className="p-4">
+                  <h3
+                    className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 text-center"
+                    style={{ fontFamily: "Comic Sans MS, cursive" }}
+                  >
+                    CA
+                  </h3>
+                  <div className="p-3 text-center bg-white dark:bg-gray-700 border-2 border-gray-600 dark:border-gray-500 rounded-lg">
+                    <p
+                      className="text-sm text-gray-800 dark:text-gray-200 font-semibold break-all"
+                      style={{ fontFamily: "Comic Sans MS, cursive" }}
+                    >
+                      CA Will live soon
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => handleCopy("CA Will live soon")}
+                    className="w-full mt-3 bg-red-600 hover:bg-red-700 text-white border-2 border-black dark:border-gray-300 transition-colors"
+                    style={{ borderStyle: "solid", fontFamily: "Comic Sans MS, cursive" }}
+                  >
+                    <Copy className="w-4 h-4 mr-2" />
+                    Copy
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
+
+        {/* Desktop Sidebar */}
+        <aside className="hidden lg:block w-64 p-6" style={{ transform: "rotate(0.2deg)" }}>
           <Card
             className="bg-gray-100 dark:bg-gray-800 border-3 border-gray-800 dark:border-gray-600 shadow-lg transform -rotate-1 transition-colors duration-300"
             style={{ borderStyle: "dashed" }}
@@ -466,7 +809,7 @@ export default function UselessTube() {
               </h3>
               <nav className="space-y-3">
                 <a
-                  href="https://x.com/UselesssTube"
+                  href="https://x.com/theuselesstube"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block p-3 text-center bg-white dark:bg-gray-700 border-2 border-gray-600 dark:border-gray-500 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors shadow-md transform hover:scale-105"
@@ -526,7 +869,7 @@ export default function UselessTube() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-4 lg:p-6">
           {/* Search Results Header */}
           {searchResults.length > 0 && (
             <div className="mb-6">
@@ -535,22 +878,22 @@ export default function UselessTube() {
                 style={{ borderStyle: "dashed" }}
               >
                 <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                     <div>
                       <h2
-                        className="text-xl font-bold text-gray-900 dark:text-gray-100"
+                        className="text-lg sm:text-xl font-bold text-gray-900 dark:text-gray-100"
                         style={{ fontFamily: "Comic Sans MS, cursive" }}
                       >
                         Search Results for "{searchQuery}"
                       </h2>
-                      <p className="text-gray-600 dark:text-gray-400" style={{ fontFamily: "Comic Sans MS, cursive" }}>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm" style={{ fontFamily: "Comic Sans MS, cursive" }}>
                         Found {searchResults.length} useless videos
                       </p>
                     </div>
                     <Button
                       onClick={clearSearch}
                       variant="outline"
-                      className="border-2 border-gray-600 dark:border-gray-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 transform hover:scale-105"
+                      className="border-2 border-gray-600 dark:border-gray-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 transform hover:scale-105 w-full sm:w-auto"
                       style={{ borderStyle: "dashed", fontFamily: "Comic Sans MS, cursive" }}
                     >
                       Clear Search
@@ -561,7 +904,7 @@ export default function UselessTube() {
             </div>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
             {displayVideos.length > 0
               ? displayVideos.map((video, index) => (
                   <div key={video.id} className="relative group">
@@ -592,7 +935,7 @@ export default function UselessTube() {
                               />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700">
-                                <Play className="w-12 h-12 text-red-600 fill-current" />
+                                <Play className="w-8 h-8 sm:w-12 sm:h-12 text-red-600 fill-current" />
                               </div>
                             )}
                             {/* Duration Badge */}
@@ -609,15 +952,15 @@ export default function UselessTube() {
                             )}
                           </div>
 
-                          <div className="p-4">
+                          <div className="p-3 sm:p-4">
                             <h3
-                              className="font-bold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2"
+                              className="font-bold text-gray-900 dark:text-gray-100 mb-2 line-clamp-2 text-sm sm:text-base"
                               style={{ fontFamily: "Comic Sans MS, cursive" }}
                             >
                               {video.title}
                             </h3>
                             <div className="flex items-center space-x-2 mb-2">
-                              <Avatar className="w-8 h-8 border-2 border-black dark:border-gray-300">
+                              <Avatar className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-black dark:border-gray-300">
                                 <AvatarImage
                                   src={video.creator_avatar || "/placeholder.svg"}
                                   alt={video.creator_name || ""}
@@ -628,7 +971,7 @@ export default function UselessTube() {
                               </Avatar>
                               <div className="flex items-center space-x-1">
                                 <span
-                                  className="text-sm text-gray-700 dark:text-gray-300 font-semibold"
+                                  className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-semibold"
                                   style={{ fontFamily: "Comic Sans MS, cursive" }}
                                 >
                                   {video.creator_name || "Anonymous"}
@@ -663,7 +1006,7 @@ export default function UselessTube() {
                             </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent
-                            className="border-3 border-gray-800"
+                            className="border-3 border-gray-800 max-w-sm mx-4"
                             style={{ borderStyle: "dashed", fontFamily: "Comic Sans MS, cursive" }}
                           >
                             <AlertDialogHeader>
@@ -699,26 +1042,26 @@ export default function UselessTube() {
                 ))
               : (
                 // Empty state when no videos exist
-                <div className="col-span-full text-center py-12">
-                  <div className="max-w-md mx-auto">
-                    <div className="w-24 h-24 bg-red-600 rounded-full mx-auto mb-6 flex items-center justify-center">
-                      <Play className="w-12 h-12 text-white fill-current" />
+                <div className="col-span-full text-center py-8 sm:py-12">
+                  <div className="max-w-md mx-auto px-4">
+                    <div className="w-16 h-16 sm:w-24 sm:h-24 bg-red-600 rounded-full mx-auto mb-4 sm:mb-6 flex items-center justify-center">
+                      <Play className="w-8 h-8 sm:w-12 sm:h-12 text-white fill-current" />
                     </div>
                     <h3
-                      className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4"
+                      className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3 sm:mb-4"
                       style={{ fontFamily: "Comic Sans MS, cursive" }}
                     >
                       No Useless Videos Yet!
                     </h3>
                     <p
-                      className="text-gray-600 dark:text-gray-400 mb-6"
+                      className="text-gray-600 dark:text-gray-400 mb-4 sm:mb-6 text-sm sm:text-base"
                       style={{ fontFamily: "Comic Sans MS, cursive" }}
                     >
                       Be the first to upload some wonderfully useless content!
                     </p>
                     <Link href="/upload">
                       <Button
-                        className="bg-red-600 hover:bg-red-700 text-white border-2 border-black transform hover:scale-105"
+                        className="bg-red-600 hover:bg-red-700 text-white border-2 border-black transform hover:scale-105 w-full sm:w-auto"
                         style={{ borderStyle: "solid", fontFamily: "Comic Sans MS, cursive" }}
                       >
                         <Upload className="w-4 h-4 mr-2" />
@@ -732,8 +1075,8 @@ export default function UselessTube() {
         </main>
       </div>
       <footer className="bg-white dark:bg-gray-800 border-t-4 border-gray-800 dark:border-gray-600 shadow-lg mt-8">
-        <div className="max-w-7xl mx-auto py-6 px-4 text-center text-gray-600 dark:text-gray-400">
-          <p style={{ fontFamily: "Comic Sans MS, cursive" }}>© 2025 UselessTube. All rights reserved. Or not. Whatever.</p>
+        <div className="max-w-7xl mx-auto py-4 sm:py-6 px-4 text-center text-gray-600 dark:text-gray-400">
+          <p className="text-sm sm:text-base" style={{ fontFamily: "Comic Sans MS, cursive" }}>© 2025 UselessTube. All rights reserved. Or not. Whatever.</p>
         </div>
       </footer>
     </div>

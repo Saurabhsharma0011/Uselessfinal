@@ -471,11 +471,11 @@ export default function WatchVideo() {
         className="bg-white dark:bg-gray-800 border-b-4 border-gray-800 dark:border-gray-600 shadow-lg transition-colors duration-300"
         style={{ borderStyle: "dashed" }}
       >
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
           <Link href="/">
             <Button
               variant="ghost"
-              className="flex items-center space-x-2 text-gray-800 hover:bg-gray-100 border-2 border-gray-600 rounded-lg transform -rotate-1"
+              className="flex items-center space-x-2 text-gray-800 hover:bg-gray-100 border-2 border-gray-600 rounded-lg transform -rotate-1 w-full sm:w-auto"
               style={{ borderStyle: "dashed", fontFamily: "Comic Sans MS, cursive" }}
             >
               <ArrowLeft className="w-5 h-5" />
@@ -484,7 +484,7 @@ export default function WatchVideo() {
           </Link>
 
           <h1
-            className="text-xl font-bold text-gray-900 transform rotate-1"
+            className="text-lg sm:text-xl font-bold text-gray-900 transform rotate-1 text-center sm:text-left"
             style={{
               fontFamily: "Comic Sans MS, cursive",
               textShadow: "2px 2px 0px #ef4444",
@@ -493,11 +493,11 @@ export default function WatchVideo() {
             UselessTube Player
           </h1>
 
-          <div className="w-32" />
+          <div className="w-full sm:w-32" />
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="max-w-6xl mx-auto p-4 sm:p-6">
         {/* Main Video Section */}
         <div className="space-y-6">
           {/* Video Player */}
@@ -680,14 +680,14 @@ export default function WatchVideo() {
             className="bg-white border-3 border-gray-800 shadow-lg transform rotate-0.3"
             style={{ borderStyle: "dashed" }}
           >
-            <CardContent className="p-6">
-              <h1 className="text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Comic Sans MS, cursive" }}>
+            <CardContent className="p-4 sm:p-6">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4" style={{ fontFamily: "Comic Sans MS, cursive" }}>
                 {video?.title}
               </h1>
 
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-4 sm:space-y-0">
                 <div className="flex items-center space-x-4">
-                  <Avatar className="w-12 h-12 border-2 border-black transform -rotate-2">
+                  <Avatar className="w-10 h-10 sm:w-12 sm:h-12 border-2 border-black transform -rotate-2">
                     <AvatarImage src={video?.creator_avatar || "/placeholder.svg"} alt={video?.creator_name} />
                     <AvatarFallback className="bg-red-600 text-white font-bold">
                       {video?.creator_name.charAt(0).toUpperCase()}
@@ -695,12 +695,12 @@ export default function WatchVideo() {
                   </Avatar>
                   <div>
                     <div className="flex items-center space-x-2">
-                      <p className="font-bold text-gray-900" style={{ fontFamily: "Comic Sans MS, cursive" }}>
+                      <p className="font-bold text-gray-900 text-sm sm:text-base" style={{ fontFamily: "Comic Sans MS, cursive" }}>
                         {video?.creator_name}
                       </p>
                       <VerifiedBadge isVerified={video?.creator_name === "UselessTube Official"} />
                     </div>
-                    <p className="text-sm text-gray-600" style={{ fontFamily: "Comic Sans MS, cursive" }}>
+                    <p className="text-xs sm:text-sm text-gray-600" style={{ fontFamily: "Comic Sans MS, cursive" }}>
                       {subscriberCount.toLocaleString()} subscribers • {video?.views.toLocaleString()} views •{" "}
                       {new Date(video?.created_at).toLocaleDateString()}
                     </p>
@@ -711,7 +711,7 @@ export default function WatchVideo() {
                   <Button
                     onClick={handleSubscribe}
                     disabled={subscribing}
-                    className={`border-2 border-black transform rotate-2 transition-all ${
+                    className={`border-2 border-black transform rotate-2 transition-all w-full sm:w-auto ${
                       isSubscribed
                         ? "bg-gray-600 hover:bg-gray-700 text-white"
                         : "bg-red-600 hover:bg-red-700 text-white"
@@ -736,47 +736,47 @@ export default function WatchVideo() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center space-x-2 mb-6">
+              <div className="flex flex-wrap items-center gap-2 mb-6">
                 <Button
                   variant="outline"
                   onClick={handleLike}
-                  className={`border-2 border-gray-600 transform hover:scale-105 ${
+                  className={`border-2 border-gray-600 transform hover:scale-105 text-sm sm:text-base ${
                     liked ? "bg-red-100 text-red-600" : "bg-white text-gray-800"
                   }`}
                   style={{ borderStyle: "dashed", fontFamily: "Comic Sans MS, cursive" }}
                 >
-                  <ThumbsUp className={`w-4 h-4 mr-2 ${liked ? "fill-current" : ""}`} />
+                  <ThumbsUp className={`w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 ${liked ? "fill-current" : ""}`} />
                   {liked ? "Liked!" : "Like"}
                 </Button>
 
                 <Button
                   variant="outline"
                   onClick={handleDislike}
-                  className={`border-2 border-gray-600 transform hover:scale-105 ${
+                  className={`border-2 border-gray-600 transform hover:scale-105 text-sm sm:text-base ${
                     disliked ? "bg-gray-100 text-gray-600" : "bg-white text-gray-800"
                   }`}
                   style={{ borderStyle: "dashed", fontFamily: "Comic Sans MS, cursive" }}
                 >
-                  <ThumbsDown className={`w-4 h-4 mr-2 ${disliked ? "fill-current" : ""}`} />
+                  <ThumbsDown className={`w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 ${disliked ? "fill-current" : ""}`} />
                   Dislike
                 </Button>
 
                 <Button
                   variant="outline"
                   onClick={handleShare}
-                  className="border-2 border-gray-600 bg-white text-gray-800 transform hover:scale-105"
+                  className="border-2 border-gray-600 bg-white text-gray-800 transform hover:scale-105 text-sm sm:text-base"
                   style={{ borderStyle: "dashed", fontFamily: "Comic Sans MS, cursive" }}
                 >
-                  <Share className="w-4 h-4 mr-2" />
+                  <Share className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Share
                 </Button>
 
                 <Button
                   variant="outline"
-                  className="border-2 border-gray-600 bg-white text-gray-800 transform hover:scale-105"
+                  className="border-2 border-gray-600 bg-white text-gray-800 transform hover:scale-105 text-sm sm:text-base"
                   style={{ borderStyle: "dashed", fontFamily: "Comic Sans MS, cursive" }}
                 >
-                  <Download className="w-4 h-4 mr-2" />
+                  <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Download
                 </Button>
 
@@ -786,10 +786,10 @@ export default function WatchVideo() {
                     <AlertDialogTrigger asChild>
                       <Button
                         variant="outline"
-                        className="border-2 border-red-600 text-red-600 hover:bg-red-50 transform hover:scale-105"
+                        className="border-2 border-red-600 text-red-600 hover:bg-red-50 transform hover:scale-105 text-sm sm:text-base"
                         style={{ borderStyle: "dashed", fontFamily: "Comic Sans MS, cursive" }}
                       >
-                        <Trash2 className="w-4 h-4 mr-2" />
+                        <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                         Delete
                       </Button>
                     </AlertDialogTrigger>

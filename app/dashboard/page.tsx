@@ -102,11 +102,11 @@ export default function Dashboard() {
     >
       {/* Header */}
       <div className="bg-white border-b-4 border-gray-800 shadow-lg" style={{ borderStyle: "dashed" }}>
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
           <Link href="/">
             <Button
               variant="ghost"
-              className="flex items-center space-x-2 text-gray-800 hover:bg-gray-100 border-2 border-gray-600 rounded-lg transform -rotate-1"
+              className="flex items-center space-x-2 text-gray-800 hover:bg-gray-100 border-2 border-gray-600 rounded-lg transform -rotate-1 w-full sm:w-auto"
               style={{ borderStyle: "dashed", fontFamily: "Comic Sans MS, cursive" }}
             >
               <ArrowLeft className="w-5 h-5" />
@@ -115,7 +115,7 @@ export default function Dashboard() {
           </Link>
 
           <h1
-            className="text-2xl font-bold text-gray-900 transform rotate-1"
+            className="text-xl sm:text-2xl font-bold text-gray-900 transform rotate-1 text-center sm:text-left"
             style={{
               fontFamily: "Comic Sans MS, cursive",
               textShadow: "2px 2px 0px #ef4444",
@@ -126,7 +126,7 @@ export default function Dashboard() {
 
           <Link href="/upload">
             <Button
-              className="bg-red-600 hover:bg-red-700 text-white border-2 border-black transform rotate-2"
+              className="bg-red-600 hover:bg-red-700 text-white border-2 border-black transform rotate-2 w-full sm:w-auto"
               style={{ borderStyle: "solid", fontFamily: "Comic Sans MS, cursive" }}
             >
               Upload More Useless Content
@@ -136,33 +136,33 @@ export default function Dashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="max-w-6xl mx-auto p-4 sm:p-6">
         {/* User Stats */}
         <Card
           className="bg-white border-3 border-gray-800 shadow-lg transform -rotate-0.5 mb-8"
           style={{ borderStyle: "dashed" }}
         >
           <CardHeader>
-            <div className="flex items-center space-x-4">
-              <Avatar className="w-16 h-16 border-3 border-black transform rotate-3">
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
+              <Avatar className="w-12 h-12 sm:w-16 sm:h-16 border-3 border-black transform rotate-3 mx-auto sm:mx-0">
                 <AvatarImage src={user.avatar_url || "/placeholder.svg"} alt={user.name || ""} />
-                <AvatarFallback className="bg-red-600 text-white font-bold text-2xl">
+                <AvatarFallback className="bg-red-600 text-white font-bold text-lg sm:text-2xl">
                   {(user.name || "U").charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <div>
-                <div className="flex items-center space-x-2">
-                  <h2 className="text-2xl font-bold text-gray-900" style={{ fontFamily: "Comic Sans MS, cursive" }}>
+              <div className="text-center sm:text-left">
+                <div className="flex items-center justify-center sm:justify-start space-x-2">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900" style={{ fontFamily: "Comic Sans MS, cursive" }}>
                     {user.name || "Unnamed Useless Creator"}
                   </h2>
                   <VerifiedBadge
                     isVerified={user.name === "UselessTube Official" || user.wallet_address === "DBoZreu2...AEYTBKEA"}
                   />
                 </div>
-                <p className="text-gray-600" style={{ fontFamily: "Comic Sans MS, cursive" }}>
+                <p className="text-gray-600 text-sm sm:text-base" style={{ fontFamily: "Comic Sans MS, cursive" }}>
                   Total Useless Videos: {videos.length}
                 </p>
-                <p className="text-gray-600" style={{ fontFamily: "Comic Sans MS, cursive" }}>
+                <p className="text-gray-600 text-sm sm:text-base" style={{ fontFamily: "Comic Sans MS, cursive" }}>
                   Total Views: {videos.reduce((sum, video) => sum + video.views, 0)}
                 </p>
               </div>

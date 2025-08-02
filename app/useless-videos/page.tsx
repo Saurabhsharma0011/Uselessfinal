@@ -185,11 +185,11 @@ export default function UselessVideos() {
     >
       {/* Header */}
       <div className="bg-white border-b-4 border-gray-800 shadow-lg" style={{ borderStyle: "dashed" }}>
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
           <Link href="/">
             <Button
               variant="ghost"
-              className="flex items-center space-x-2 text-gray-800 hover:bg-gray-100 border-2 border-gray-600 rounded-lg transform -rotate-1"
+              className="flex items-center space-x-2 text-gray-800 hover:bg-gray-100 border-2 border-gray-600 rounded-lg transform -rotate-1 w-full sm:w-auto"
               style={{ borderStyle: "dashed", fontFamily: "Comic Sans MS, cursive" }}
             >
               <ArrowLeft className="w-5 h-5" />
@@ -198,7 +198,7 @@ export default function UselessVideos() {
           </Link>
 
           <h1
-            className="text-3xl font-bold text-gray-900 transform rotate-1"
+            className="text-2xl sm:text-3xl font-bold text-gray-900 transform rotate-1 text-center sm:text-left"
             style={{
               fontFamily: "Comic Sans MS, cursive",
               textShadow: "2px 2px 0px #ef4444",
@@ -207,22 +207,22 @@ export default function UselessVideos() {
             Useless Videos Collection
           </h1>
 
-          <div className="w-32" />
+          <div className="w-full sm:w-32" />
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6">
         {/* Description */}
         <Card
           className="bg-gradient-to-br from-red-100 to-orange-100 border-3 border-gray-800 shadow-lg transform -rotate-0.5 mb-8"
           style={{ borderStyle: "dashed" }}
         >
-          <CardContent className="p-6 text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-3" style={{ fontFamily: "Comic Sans MS, cursive" }}>
+          <CardContent className="p-4 sm:p-6 text-center">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3" style={{ fontFamily: "Comic Sans MS, cursive" }}>
               🗑️ The Most Useless Videos Ever Created 🗑️
             </h2>
-            <p className="text-gray-700 text-lg" style={{ fontFamily: "Comic Sans MS, cursive" }}>
+            <p className="text-gray-700 text-base sm:text-lg" style={{ fontFamily: "Comic Sans MS, cursive" }}>
               Curated collection of the most pointless, meaningless, and utterly useless videos on the internet. Perfect
               for wasting your precious time!
             </p>
@@ -230,7 +230,7 @@ export default function UselessVideos() {
         </Card>
 
         {/* Videos Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {uselessVideos.map((video, index) => (
             <Link key={video.id} href={`/watch/${video.id}`}>
               <Card
