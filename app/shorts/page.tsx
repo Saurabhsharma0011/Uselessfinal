@@ -36,9 +36,9 @@ export default function ShortsPage() {
       videoUrl: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Make_a_video_202508011057_nqjtg-CHAwHGXgiWo7vZinMSOPJEGVwSlI76.mp4",
       thumbnailUrl: "/placeholder.svg?height=400&width=300&text=Candle+Flame",
       duration: 30,
-      views: 125000,
-      creator: "FlameWatcher",
-      creatorAvatar: "/placeholder.svg?height=40&width=40&text=FW"
+      views: 100000,
+      creator: "UselessTube Official",
+      creatorAvatar: "/placeholder.svg?height=40&width=40&text=UO"
     },
     {
       id: 2,
@@ -102,12 +102,12 @@ export default function ShortsPage() {
           id: video.id,
           title: video.title,
           description: video.description,
-          videoUrl: video.videoUrl,
-          thumbnailUrl: video.thumbnailUrl,
+          videoUrl: video.video_url,
+          thumbnailUrl: video.thumbnail_url,
           duration: video.duration,
           views: video.views,
-          creator: video.user?.name || "Anonymous",
-          creatorAvatar: video.user?.avatarUrl || "/placeholder.svg?height=40&width=40&text=A"
+          creator: video.creator_name || "Anonymous",
+          creatorAvatar: video.creator_avatar || "/placeholder.svg?height=40&width=40&text=A"
         }))
         setShortVideos(transformedVideos)
       } else {
@@ -129,7 +129,7 @@ export default function ShortsPage() {
       videoRef.addEventListener('ended', handleVideoEnd)
       return () => videoRef.removeEventListener('ended', handleVideoEnd)
     }
-  }, [videoRef])
+  }, [videoRef, shortVideos.length])
 
   const handleVideoEnd = () => {
     // Auto-play next video
@@ -178,9 +178,10 @@ export default function ShortsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-white text-xl" style={{ fontFamily: "Comic Sans MS, cursive" }}>
-          Loading Useless Shorts...
+      <div className="min-h-screen bg-black flex items-center justify-center text-white">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-red-500 mx-auto mb-4"></div>
+          <p style={{ fontFamily: "Comic Sans MS, cursive" }}>Loading Useless Shorts...</p>
         </div>
       </div>
     )
@@ -188,18 +189,19 @@ export default function ShortsPage() {
 
   if (!currentVideo) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="text-center text-white">
+      <div className="min-h-screen bg-black flex items-center justify-center text-white">
+        <div className="text-center">
           <h2 className="text-2xl font-bold mb-4" style={{ fontFamily: "Comic Sans MS, cursive" }}>
-            No Useless Shorts Available
+            No Useless Shorts Here!
           </h2>
-          <p className="mb-4" style={{ fontFamily: "Comic Sans MS, cursive" }}>
-            Be the first to upload some wonderfully useless shorts!
+          <p className="mb-8" style={{ fontFamily: "Comic Sans MS, cursive" }}>
+            Be the first to upload a wonderfully useless short video.
           </p>
           <Link href="/upload">
-            <Button className="bg-red-600 hover:bg-red-700 text-white">
-              Upload Short Video
-            </Button>
+            <Button className="bg-red-600 hover:bg-red-700 text-white border-2 border-black">Upload a Short</Button>
+          </Link>
+          <Link href="/" className="block mt-4 text-sm text-gray-400 hover:text-white">
+            Go Back Home
           </Link>
         </div>
       </div>
@@ -229,6 +231,7 @@ export default function ShortsPage() {
           {/* Video Element */}
           <video
             ref={setVideoRef}
+            key={currentVideo.id}
             className="w-full h-full object-cover"
             poster={currentVideo.thumbnailUrl}
             onPlay={() => setIsPlaying(true)}
@@ -246,105 +249,49 @@ export default function ShortsPage() {
             <h2 className="text-white text-lg font-bold mb-2" style={{ fontFamily: "Comic Sans MS, cursive" }}>
               {currentVideo.title}
             </h2>
-            <p className="text-gray-300 text-sm mb-2" style={{ fontFamily: "Comic Sans MS, cursive" }}>
-              {currentVideo.description}
-            </p>
-            <div className="flex items-center space-x-2 text-white text-sm">
-              <span style={{ fontFamily: "Comic Sans MS, cursive" }}>{currentVideo.creator}</span>
-              <span>•</span>
-              <span>{currentVideo.views.toLocaleString()} views</span>
+            <div className="flex items-center space-x-2 mb-2">
+              <img
+                src={currentVideo.creatorAvatar}
+                alt={currentVideo.creator}
+                className="w-8 h-8 rounded-full border-2 border-white"
+              />
+              <span className="text-white font-semibold">{currentVideo.creator}</span>
             </div>
+            <p className="text-white text-sm line-clamp-2">{currentVideo.description}</p>
           </div>
 
-          {/* Video Controls */}
-          <div className="absolute bottom-4 right-4 flex space-x-2">
-            <Button
-              onClick={toggleMute}
-              size="sm"
-              variant="ghost"
-              className="bg-black/50 text-white hover:bg-black/70"
-            >
-              {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+          {/* Controls Overlay */}
+          <div className="absolute inset-0 flex items-center justify-center" onClick={togglePlay}>
+            {!isPlaying && (
+              <div className="bg-black bg-opacity-50 rounded-full p-4">
+                <Play className="w-16 h-16 text-white fill-current" />
+              </div>
+            )}
+          </div>
+
+          {/* Side Controls */}
+          <div className="absolute right-2 bottom-24 flex flex-col space-y-4">
+            <Button variant="ghost" size="icon" className="text-white" onClick={toggleMute}>
+              {isMuted ? <VolumeX className="w-8 h-8" /> : <Volume2 className="w-8 h-8" />}
             </Button>
-            <Button
-              onClick={toggleFullscreen}
-              size="sm"
-              variant="ghost"
-              className="bg-black/50 text-white hover:bg-black/70"
-            >
-              <Maximize className="w-4 h-4" />
+            <Button variant="ghost" size="icon" className="text-white" onClick={toggleFullscreen}>
+              <Maximize className="w-8 h-8" />
             </Button>
           </div>
 
-          {/* Navigation Buttons */}
-          <div className="absolute inset-0 flex items-center justify-between px-4">
-            <Button
-              onClick={prevVideo}
-              size="sm"
-              variant="ghost"
-              className="bg-black/50 text-white hover:bg-black/70"
-            >
-              ←
-            </Button>
-            <Button
-              onClick={togglePlay}
-              size="lg"
-              variant="ghost"
-              className="bg-black/50 text-white hover:bg-black/70"
-            >
-              {isPlaying ? <Pause className="w-8 h-8" /> : <Play className="w-8 h-8" />}
-            </Button>
-            <Button
-              onClick={nextVideo}
-              size="sm"
-              variant="ghost"
-              className="bg-black/50 text-white hover:bg-black/70"
-            >
-              →
-            </Button>
+          {/* Navigation Arrows */}
+          <div
+            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-2 cursor-pointer"
+            onClick={prevVideo}
+          >
+            <ArrowLeft className="w-8 h-8 text-white" />
           </div>
-        </div>
-      </div>
-
-      {/* Video List */}
-      <div className="bg-gray-900 p-4">
-        <h3 className="text-white text-lg font-bold mb-4" style={{ fontFamily: "Comic Sans MS, cursive" }}>
-          More Useless Shorts
-        </h3>
-        <div className="flex space-x-4 overflow-x-auto">
-          {shortVideos.map((video, index) => (
-            <Card
-              key={video.id}
-              className={`min-w-[200px] cursor-pointer transition-all ${
-                index === currentVideoIndex ? 'ring-2 ring-red-500' : 'hover:scale-105'
-              }`}
-              onClick={() => {
-                setCurrentVideoIndex(index)
-                setIsPlaying(true)
-              }}
-            >
-              <CardContent className="p-0">
-                <div className="relative">
-                  <img
-                    src={video.thumbnailUrl}
-                    alt={video.title}
-                    className="w-full h-32 object-cover"
-                  />
-                  <div className="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1 rounded">
-                    {Math.floor(video.duration / 60)}:{(video.duration % 60).toString().padStart(2, "0")}
-                  </div>
-                </div>
-                <div className="p-2">
-                  <h4 className="text-sm font-semibold line-clamp-2" style={{ fontFamily: "Comic Sans MS, cursive" }}>
-                    {video.title}
-                  </h4>
-                  <p className="text-xs text-gray-600" style={{ fontFamily: "Comic Sans MS, cursive" }}>
-                    {video.views.toLocaleString()} views
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+          <div
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-2 cursor-pointer"
+            onClick={nextVideo}
+          >
+            <ArrowLeft className="w-8 h-8 text-white transform rotate-180" />
+          </div>
         </div>
       </div>
     </div>

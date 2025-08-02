@@ -5,7 +5,7 @@ import { DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Search, UserIcon, Play, ChevronDown, Upload, Check, Trash2 } from "lucide-react"
+import { Search, UserIcon, Play, ChevronDown, Upload, Check, Trash2, Copy } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -35,6 +35,14 @@ export default function UselessTube() {
   const [isSearching, setIsSearching] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text)
+    toast({
+      title: "Copied!",
+      description: "The text has been copied to your clipboard.",
+    })
+  }
 
   const sidebarItems = [
     { name: "Home", href: "/" },
@@ -443,6 +451,78 @@ export default function UselessTube() {
               </nav>
             </CardContent>
           </Card>
+
+          {/* Social Section */}
+          <Card
+            className="mt-6 bg-gray-100 dark:bg-gray-800 border-3 border-gray-800 dark:border-gray-600 shadow-lg transform rotate-1 transition-colors duration-300"
+            style={{ borderStyle: "dashed" }}
+          >
+            <CardContent className="p-4">
+              <h3
+                className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 text-center"
+                style={{ fontFamily: "Comic Sans MS, cursive" }}
+              >
+                Socials
+              </h3>
+              <nav className="space-y-3">
+                <a
+                  href="https://x.com/UselesssTube"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block p-3 text-center bg-white dark:bg-gray-700 border-2 border-gray-600 dark:border-gray-500 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors shadow-md transform hover:scale-105"
+                  style={{
+                    fontFamily: "Comic Sans MS, cursive",
+                    borderStyle: "solid",
+                  }}
+                >
+                  <span className="text-gray-800 dark:text-gray-200 font-semibold">Twitter</span>
+                </a>
+                <a
+                  href="https://t.me/uselessstube"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block p-3 text-center bg-white dark:bg-gray-700 border-2 border-gray-600 dark:border-gray-500 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors shadow-md transform hover:scale-105"
+                  style={{
+                    fontFamily: "Comic Sans MS, cursive",
+                    borderStyle: "solid",
+                  }}
+                >
+                  <span className="text-gray-800 dark:text-gray-200 font-semibold">Telegram</span>
+                </a>
+              </nav>
+            </CardContent>
+          </Card>
+
+          {/* CA Section */}
+          <Card
+            className="mt-6 bg-gray-100 dark:bg-gray-800 border-3 border-gray-800 dark:border-gray-600 shadow-lg transform -rotate-1 transition-colors duration-300"
+            style={{ borderStyle: "dashed" }}
+          >
+            <CardContent className="p-4">
+              <h3
+                className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-3 text-center"
+                style={{ fontFamily: "Comic Sans MS, cursive" }}
+              >
+                CA
+              </h3>
+              <div className="p-3 text-center bg-white dark:bg-gray-700 border-2 border-gray-600 dark:border-gray-500 rounded-lg">
+                <p
+                  className="text-sm text-gray-800 dark:text-gray-200 font-semibold break-all"
+                  style={{ fontFamily: "Comic Sans MS, cursive" }}
+                >
+                  CA Will live soon
+                </p>
+              </div>
+              <Button
+                onClick={() => handleCopy("CA Will live soon")}
+                className="w-full mt-3 bg-red-600 hover:bg-red-700 text-white border-2 border-black dark:border-gray-300 transition-colors"
+                style={{ borderStyle: "solid", fontFamily: "Comic Sans MS, cursive" }}
+              >
+                <Copy className="w-4 h-4 mr-2" />
+                Copy
+              </Button>
+            </CardContent>
+          </Card>
         </aside>
 
         {/* Main Content */}
@@ -497,15 +577,24 @@ export default function UselessTube() {
                           {/* Video Thumbnail Section */}
                           <div
                             className="relative aspect-video border-b-3 border-gray-800 dark:border-gray-600 overflow-hidden"
-                            style={{
-                              borderStyle: "dashed",
-                              backgroundImage: video.thumbnail_url
-                                ? `url(${video.thumbnail_url})`
-                                : "linear-gradient(to bottom right, rgb(229, 231, 235), rgb(75, 85, 99))",
-                              backgroundSize: "cover",
-                              backgroundPosition: "center",
-                            }}
+                            style={{ borderStyle: "dashed" }}
                           >
+                            {video.thumbnail_url ? (
+                              <img
+                                src={video.thumbnail_url}
+                                alt={video.title}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement
+                                  target.onerror = null // prevent infinite loop
+                                  target.src = "/placeholder.svg"
+                                }}
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-gray-200 dark:bg-gray-700">
+                                <Play className="w-12 h-12 text-red-600 fill-current" />
+                              </div>
+                            )}
                             {/* Duration Badge */}
                             <div className="absolute bottom-2 right-2 bg-black bg-opacity-80 text-white px-2 py-1 rounded text-xs font-bold">
                               {Math.floor(video.duration / 60)}:{(video.duration % 60).toString().padStart(2, "0")}
