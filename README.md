@@ -1,6 +1,3 @@
-Here's a **cleaned-up and more readable version** of your `README.md` for **UselessTube** – structured, neat, and easy for both contributors and curious devs to follow:
-
----
 
 # 🧪 UselessTube - Where Things Become Useless
 
@@ -248,6 +245,4 @@ Licensed under the **MIT License** – use it, break it, improve it, share it.
 
 This is a parody app. The UI may look silly – **because it is**. But under the hood, it's a legit dev playground. Use responsibly, and laugh a little. 😄
 
----
 
-Let me know if you want a PDF version or to turn this into a GitHub landing page (like a `README.md` preview site)!
