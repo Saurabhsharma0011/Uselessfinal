@@ -111,7 +111,6 @@ Go to: [http://localhost:3000](http://localhost:3000)
 ### 💬 Comments
 
 * Comment on videos
-* Created at timestamp
 
 ### 👍 Video Likes
 
@@ -244,5 +243,6 @@ Licensed under the **MIT License** – use it, break it, improve it, share it.
 ## 🎭 Disclaimer
 
 This is a parody app. The UI may look silly – **because it is**. But under the hood, it's a legit dev playground. Use responsibly, and laugh a little. 😄
+
 
 
